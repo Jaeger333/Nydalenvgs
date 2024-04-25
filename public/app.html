@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>App</h1>
+
+    <h2>Students:</h2>
+    <select id="students">Hei</select>
+
+    <br>
+
+    <table id="user-table">
+        <thead id="thead">
+            <tr>
+                <th colspan="5">
+                    <form id="user-edit-form">
+                        <input type="text" id="edit-firstname" placeholder="First Name">
+                        <input type="text" id="edit-lastname" placeholder="Last Name">
+                        <input type="text" id="edit-username" placeholder="Username">
+                        <input type="email" id="edit-email" placeholder="Email">
+                        <button type="submit">Save</button>
+                    </form>
+                </th>
+            </tr>
+            <tr>
+                <th>Fornavn</th>
+                <th>Etternavn</th>
+                <th>Brukernavn</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
+
+    <br>
+
+    <h2>Registrer ny bruker:</h2>
+    <form id = "registerForm" action='/register' method="POST">
+        <label for="username">Username:</label>
+        <input type="text" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required>
+        <br>
+
+        <br>
+        <label for="firstname">Fornavn:</label>
+        <input type="text" name="firstname" required>
+        <br>
+        <label for="lastname">Etternavn:</label>
+        <input type="text" name="lastname">
+        <br>
+        <label for="role">Rolle:</label>
+        <input type="number" name="role">
+        <br>
+        <label for="mail">Epost:</label>
+        <input type="text" name="email" required>
+        <br>
+
+        <br>
+        <button type="submit" name="register">Registrer</button>
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>
