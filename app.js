@@ -117,6 +117,30 @@ function checkLoggedIn(req, res, next) {
 
 }
 
+app.post("/updateUser", (req, res) => {
+    console.log(req.body)
+    const user = req.body
+    if (user.password != "" || user.password != null) {
+        updateUserDB2(user.userID, user.username, user.firstname, user.lastname, user.email, user.password)
+    } else {
+        updateUserDB(user.userID, user.username, user.firstname, user.lastname, user.email)
+    }
+    res.redirect('/');
+})
+
+function updateUserDB(id, username, firstname, lastname, email) {
+    const sql = db.prepare("update user set username=(?), firstname=(?), lastname=(?), email=(?) WHERE id=(?)")
+    const info = sql.run(username, firstname, lastname, email, id)
+}
+
+function updateUserDB2(id, username, firstname, lastname, email, password) {
+    const sql = db.prepare("update user set username=(?), firstname=(?), lastname=(?), email=(?), password=(?) WHERE id=(?)")
+
+    const hash = bcrypt.hashSync(password, saltRounds);
+
+    const info = sql.run(username, firstname, lastname, email, hash, id)
+}
+
 
 
 

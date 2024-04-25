@@ -53,16 +53,19 @@ function populateUserTable(students) {
             <td>${user.username}</td>
             <td>${user.email}</td>
         `;
-        newRow.addEventListener('click', () => {
-            const editFirstname = document.getElementById('edit-firstname');
-            const editLastname = document.getElementById('edit-lastname');
-            const editUsername = document.getElementById('edit-username');
-            const editEmail = document.getElementById('edit-email');
 
-            editFirstname.value = user.firstname;
-            editLastname.value = user.lastname;
-            editUsername.value = user.username;
-            editEmail.value = user.email;
+        newRow.setAttribute('user-id', user.id);
+
+
+        newRow.addEventListener('click', () => {
+            const editForm = document.getElementById('editForm');
+
+
+            editForm.userID.value = user.id;
+            editForm.firstname.value = user.firstname;
+            editForm.lastname.value = user.lastname;
+            editForm.username.value = user.username;
+            editForm.email.value = user.email;
         });
         tableBody.appendChild(newRow);
     }

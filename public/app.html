@@ -18,11 +18,13 @@
         <thead id="thead">
             <tr>
                 <th colspan="5">
-                    <form id="user-edit-form">
-                        <input type="text" id="edit-firstname" placeholder="First Name">
-                        <input type="text" id="edit-lastname" placeholder="Last Name">
-                        <input type="text" id="edit-username" placeholder="Username">
-                        <input type="email" id="edit-email" placeholder="Email">
+                    <form id="editForm" action='/updateUser' method="POST">
+                        <input type="hidden" name="userID">
+                        <input type="text" name="firstname" placeholder="First Name">
+                        <input type="text" name="lastname" placeholder="Last Name">
+                        <input type="text" name="username" placeholder="Username">
+                        <input type="text" name="password" placeholder="Password">
+                        <input type="email" name="email" placeholder="Email">
                         <button type="submit">Save</button>
                     </form>
                 </th>
