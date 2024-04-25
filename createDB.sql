@@ -10,6 +10,15 @@ CREATE TABLE user (
     lastname VARCHAR(50),
     password VARCHAR(50) NOT NULL,
     roleId INTEGER NOT NULL,
+    classId INTEGER,
     email VARCHAR(50),
-    FOREIGN KEY (roleId) REFERENCES role(id)
+    FOREIGN KEY (roleId) REFERENCES role(id),
+    FOREIGN KEY (classId) REFERENCES class(id)
 );
+
+CREATE TABLE class (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+DROP TABLE IF EXISTS user;

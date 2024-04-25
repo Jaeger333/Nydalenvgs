@@ -18,10 +18,12 @@ document.addEventListener('DOMContentLoaded', main)
 async function fetchStudents() {
     try {
         const response = await fetch('/users')
+        const response2 = await fetch('/classes')
 
         students = await response.json()
+        classes = await response2.json()
         console.log("students" + students)
-        populateUserTable(students);
+        populateUserTable(students, classes);
         populateStudents(students);
     } catch (error) {
         console.log('Failed to fetch students:', error);
@@ -39,7 +41,7 @@ function populateStudents(students) {
     }
 }
 
-function populateUserTable(students) {
+function populateUserTable(students, classes) {
     const sortedStudents = students.slice().sort((a, b) => a.username.localeCompare(b.username));
     const tableBody = document.getElementById('tbody');
     tableBody.innerHTML = ""; // Clear existing rows
@@ -52,20 +54,32 @@ function populateUserTable(students) {
             <td>${user.lastname}</td>
             <td>${user.username}</td>
             <td>${user.email}</td>
+            <td>${user.class}</td>
         `;
-
-        newRow.setAttribute('user-id', user.id);
-
 
         newRow.addEventListener('click', () => {
             const editForm = document.getElementById('editForm');
-
+            editForm.class.innerHTML = "";
 
             editForm.userID.value = user.id;
             editForm.firstname.value = user.firstname;
             editForm.lastname.value = user.lastname;
             editForm.username.value = user.username;
             editForm.email.value = user.email;
+
+            const selectedOption = document.createElement("option");
+            selectedOption.value = user.classId;
+            selectedOption.textContent = user.class;
+            editForm.class.appendChild(selectedOption);
+            
+            classes.forEach(classItem => {
+                if (classItem.id !== user.classId) { // Exclude the current class
+                    const option = document.createElement("option");
+                    option.value = classItem.id;
+                    option.textContent = classItem.name;
+                    editForm.class.appendChild(option);
+                }
+            });
         });
         tableBody.appendChild(newRow);
     }

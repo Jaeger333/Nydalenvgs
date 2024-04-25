@@ -57,7 +57,7 @@ app.post('/login', (req, res) => {
 app.post('/register', (req, res) => {
     console.log("registerUser", req.body);
     const reguser = req.body;
-    const user = addUser(reguser.username, reguser.firstname, reguser.lastname, reguser.password, reguser.role, reguser.email)
+    const user = addUser(reguser.username, reguser.firstname, reguser.lastname, reguser.password, reguser.role, reguser.class, reguser.email)
     // Redirect to user list or confirmation page after adding user
     if (user)   {
         req.session.loggedIn = true
@@ -71,14 +71,14 @@ app.post('/register', (req, res) => {
     } 
 });
 
-function addUser(username, firstname, lastname, password, roleId, email) {
+function addUser(username, firstname, lastname, password, roleId, classId, email) {
     //Denne funksjonen må endres slik at man hasher passordet før man lagrer til databasen
     //rolle skal heller ikke være hardkodet.
     const saltRounds = 10
     const hash = bcrypt.hashSync(password, saltRounds)
-    let sql = db.prepare("INSERT INTO user (username, firstname, lastname, password, roleId, email) " + 
-                         " values (?, ?, ?, ?, ?, ?)")
-    const info = sql.run(username, firstname, lastname, hash, roleId, email)
+    let sql = db.prepare("INSERT INTO user (username, firstname, lastname, password, roleId, classId, email) " + 
+                         " values (?, ?, ?, ?, ?, ?, ?)")
+    const info = sql.run(username, firstname, lastname, hash, roleId, classId, email)
     
     //sql=db.prepare('select user.id as userid, username, task.id as taskid, timedone, task.name as task, task.points from done inner join task on done.idtask = task.id where iduser = ?)')
     sql = db.prepare('SELECT user.id as userId, user.username, role.name AS role FROM user INNER JOIN role on user.roleId = role.id WHERE user.id  = ?');
@@ -89,7 +89,15 @@ function addUser(username, firstname, lastname, password, roleId, email) {
 }
 
 app.get('/users', (req, res) => {
-    const sql = db.prepare("SELECT user.id, user.username, user.firstname, user.lastname, user.email FROM user INNER JOIN role ON user.roleId = role.id WHERE role.name = 'User'")
+    const sql = db.prepare("SELECT user.id, user.username, user.firstname, user.lastname, user.email, user.classId, class.name AS class FROM user INNER JOIN role ON user.roleId = role.id INNER JOIN class ON user.classId = class.id WHERE role.name = 'User'")
+    let rows = sql.all()
+    console.log("rows.length", rows.length)
+
+    res.send(rows);
+});
+
+app.get('/classes', (req, res) => {
+    const sql = db.prepare("SELECT id, name FROM class")
     let rows = sql.all()
     console.log("rows.length", rows.length)
 
@@ -121,24 +129,24 @@ app.post("/updateUser", (req, res) => {
     console.log(req.body)
     const user = req.body
     if (user.password != "" || user.password != null) {
-        updateUserDB2(user.userID, user.username, user.firstname, user.lastname, user.email, user.password)
+        updateUserDB2(user.userID, user.username, user.firstname, user.lastname, user.email, user.password, user.class)
     } else {
-        updateUserDB(user.userID, user.username, user.firstname, user.lastname, user.email)
+        updateUserDB(user.userID, user.username, user.firstname, user.lastname, user.email, user.class)
     }
     res.redirect('/');
 })
 
-function updateUserDB(id, username, firstname, lastname, email) {
-    const sql = db.prepare("update user set username=(?), firstname=(?), lastname=(?), email=(?) WHERE id=(?)")
-    const info = sql.run(username, firstname, lastname, email, id)
+function updateUserDB(id, username, firstname, lastname, email, classId) {
+    const sql = db.prepare("update user set username=(?), firstname=(?), lastname=(?), email=(?), classId=(?) WHERE id=(?)")
+    const info = sql.run(username, firstname, lastname, email, classId, id)
 }
 
-function updateUserDB2(id, username, firstname, lastname, email, password) {
-    const sql = db.prepare("update user set username=(?), firstname=(?), lastname=(?), email=(?), password=(?) WHERE id=(?)")
+function updateUserDB2(id, username, firstname, lastname, email, password, classId) {
+    const sql = db.prepare("update user set username=(?), firstname=(?), lastname=(?), email=(?), password=(?), classId=(?) WHERE id=(?)")
 
     const hash = bcrypt.hashSync(password, saltRounds);
 
-    const info = sql.run(username, firstname, lastname, email, hash, id)
+    const info = sql.run(username, firstname, lastname, email, hash, classId, id)
 }
 
 
